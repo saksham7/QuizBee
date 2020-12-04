@@ -370,7 +370,9 @@ const qBank = [
       questionId: "4982981"
     }
   ];
+
+  const questionBank = (n = 5) =>
+  Promise.resolve(qBank.sort(() => 0.5 - Math.random()).slice(0, n));
   
-  export default (n = 5) =>
-    Promise.resolve(qBank.sort(() => 0.5 - Math.random()).slice(0, n));
+  export default questionBank;
   
