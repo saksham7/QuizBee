@@ -1,9 +1,13 @@
 import React from 'react';
 import questionBank from '../questionBank';
 import AnswerOptions from './AnswerOptions';
+import Result from './Result';
+
 class QuizBee extends React.Component {
     state = {
-        questionBank: []
+        questionBank: [],
+        score: 0,
+        response: 0
     }
 
     getQuestions() {
@@ -11,12 +15,32 @@ class QuizBee extends React.Component {
             this.setState({
                 questionBank: x
             })
-            console.log(this.state.questionBank)
         });
     }
 
     componentDidMount() {
         this.getQuestions();
+    }
+
+    selectionAnswer = (selectedAnswer, correctAnswer) => {
+        if(selectedAnswer === correctAnswer) {
+            this.setState({
+                score: this.state.score + 1
+            })
+        }
+        this.setState({
+            response: this.state.response + 1
+        })
+    }
+
+    playAgain = (isPlayAgain) => {
+        if(isPlayAgain) {
+            this.getQuestions();
+            this.setState({
+                score: 0,
+                response: 0
+            });
+        }
     }
 
     render (){
@@ -31,14 +55,17 @@ class QuizBee extends React.Component {
                             </header>
                             <div>
                                 {
-                                    this.state.questionBank.length > 0 && this.state.questionBank.map(x => {
+                                    (this.state.questionBank.length > 0 && this.state.response < 5 &&
+                                    this.state.questionBank.map(x => {
                                      return (
                                         <div className="p-3" key={x.questionId}>
                                         <h5>{x.question}</h5>
-                                        <AnswerOptions answers={x.answers} correctAnswer={x.correct} />
+                                        <AnswerOptions answers={x.answers} correctAnswer={x.correct} selected={this.selectionAnswer} />
                                         </div>
                                         )
-                                    })
+                                    })) || (
+                                        this.state.response === 5 && <Result score={this.state.score} playAgain={this.playAgain}/>
+                                    )
                                 }
                             </div>
                         </div>
